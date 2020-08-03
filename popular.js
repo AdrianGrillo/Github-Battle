@@ -4,6 +4,7 @@ import { fetchPopularRepos } from '../utility/api.js'
 import { FaUser, FaStar, FaCodeBranch, FaExclamationTriangle } from 'react-icons/fa'
 import Card from './card'
 import Loading from './loading'
+import Tooltip from './tooltip'
 
 function LanguagesNav({ selected, onUpdateLanguage }) {
     const languages = ['All', 'JavaScript', 'Ruby', 'Java', 'CSS', 'Python']
@@ -46,10 +47,14 @@ function ReposGrid({ repos }) {
                         >
                             <ul className='card-list'>
                                 <li>
-                                    <FaUser color='rgb(255, 191, 166)' size={22} />
-                                    <a href={`https://github.com/${login}`}>
-                                        {login}
-                                    </a>
+                                    <Tooltip
+                                        text='Github Username'
+                                    >
+                                        <FaUser color='rgb(255, 191, 166)' size={22} />
+                                        <a href={`https://github.com/${login}`}>
+                                            {login}
+                                        </a>
+                                    </Tooltip>
                                 </li>
                                 <li>
                                     <FaStar color='rgb(255, 215, 0)' size={22} />
@@ -77,22 +82,17 @@ ReposGrid.propTypes = {
 }
 
 export default class Popular extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            selectedLanguage: 'All',
-            repos: {},
-            error: null
-        }
-
-        this.updateLanguage = this.updateLanguage.bind(this)
-        this.isLoading = this.isLoading.bind(this)
+    state = {
+        selectedLanguage: 'All',
+        repos: {},
+        error: null
     }
+
     componentDidMount() {
         this.updateLanguage(this.state.selectedLanguage)
     }
-    updateLanguage(selectedLanguage) {
+
+    updateLanguage = selectedLanguage => {
         this.setState({
             selectedLanguage,
             error: null,
@@ -115,7 +115,7 @@ export default class Popular extends React.Component {
                 })
         }
     }
-    isLoading() {
+    isLoading = () => {
         const { selectedLanguage, repos, error } = this.state
 
         return !repos[selectedLanguage] && error === null
